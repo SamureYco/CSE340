@@ -4,6 +4,7 @@
 const express = require('express');
 const app = express();
 const path = require('path');
+const inventoryRoute = require("./routes/inventoryRoute");
 
 // 2. Define el puerto
 const port = process.env.PORT || 3000;
@@ -27,3 +28,4 @@ app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);
 });
  
+app.use("/inventory", inventoryRoute);
