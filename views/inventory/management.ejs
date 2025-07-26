@@ -1,14 +1,10 @@
-<% include ../partials/header %>
+<h1>Available Vehicles</h1>
 
-<h1>Vehicle Management</h1>
-
-<% if (message) { %>
-  <div class="flash"><%= message %></div>
-<% } %>
-
-<ul>
-  <li><a href="/inv/add-classification">Add New Classification</a></li>
-  <li><a href="/inv/add-inventory">Add New Inventory</a></li>
-</ul>
-
-<% include ../partials/footer %>
+<% vehicles.forEach(vehicle => { %>
+  <div>
+    <h2><%= vehicle.inv_year %> <%= vehicle.inv_make %> <%= vehicle.inv_model %></h2>
+    <img src="<%= vehicle.inv_image %>" alt="<%= vehicle.inv_make %> <%= vehicle.inv_model %>" width="200">
+    <p><%= vehicle.inv_description %></p>
+    <a href="/inventory/detail/<%= vehicle.inv_id %>">View Details</a>
+  </div>
+<% }) %>

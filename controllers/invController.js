@@ -1,24 +1,24 @@
 const invModel = require("../models/inventory-model");
 
-async function buildDetailView(req, res, next) {
+async function buildById(req, res, next) {
   try {
-    const invId = req.params.inv_id;
-    const vehicle = await invModel.getVehicleById(invId);
+    const inv_id = req.params.inv_id;
+    const data = await invModel.getVehicleById(inv_id);
 
-    if (!vehicle) {
+    if (!data) {
       return res.status(404).render("errors/error", {
         title: "Vehicle Not Found",
-        message: "Sorry, we couldn't find that vehicle.",
+        message: "The requested vehicle could not be found.",
       });
     }
 
     res.render("inventory/detail", {
-      title: `${vehicle.inv_make} ${vehicle.inv_model}`,
-      vehicle,
+      title: `${data.inv_make} ${data.inv_model}`,
+      vehicle: data,
     });
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    next(error);
   }
 }
 
-module.exports = { buildDetailView };
+module.exports = { buildById };
