@@ -1,15 +1,14 @@
-const pool = require("../database/connection"); // Ajusta si tu archivo se llama diferente
+const db = require('../db');  // Asegúrate de que este sea el archivo correcto de conexión
 
-async function getVehicleById(inv_id) {
-  try {
-    const result = await pool.query(
-      "SELECT * FROM public.inventory WHERE inv_id = $1",
-      [inv_id]
-    );
-    return result.rows[0]; // Devuelve un solo vehículo
-  } catch (error) {
-    throw error;
-  }
+// Función para obtener vehículos
+async function getVehicles() {
+  const query = 'SELECT * FROM inventory'; // O tu consulta real
+  const result = await db.query(query);
+  return result.rows;
 }
 
-module.exports = { getVehicleById };
+// Exporta las funciones del modelo
+module.exports = {
+  getVehicles,
+  // Más funciones del modelo según sea necesario
+};

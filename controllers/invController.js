@@ -1,24 +1,29 @@
-const invModel = require("../models/inventory-model");
+// controllers/invController.js
 
-async function buildById(req, res, next) {
-  try {
-    const inv_id = req.params.inv_id;
-    const data = await invModel.getVehicleById(inv_id);
+// Método para la vista de gestión
+exports.managementView = (req, res) => {
+  res.render('inventory/management', { title: 'Inventory Management' });
+};
 
-    if (!data) {
-      return res.status(404).render("errors/error", {
-        title: "Vehicle Not Found",
-        message: "The requested vehicle could not be found.",
-      });
-    }
+// Método para agregar clasificación
+exports.addClassificationView = (req, res) => {
+  res.render('inventory/add-classification', { title: 'Add Classification' });
+};
 
-    res.render("inventory/detail", {
-      title: `${data.inv_make} ${data.inv_model}`,
-      vehicle: data,
-    });
-  } catch (error) {
-    next(error);
+// Método para agregar inventario
+exports.addInventoryView = (req, res) => {
+  res.render('inventory/add-inventory', { title: 'Add Inventory' });
+};
+
+// Método para ver detalles de un vehículo
+exports.viewVehicleDetail = (req, res) => {
+  const vehicleId = req.params.id;
+  // Simula la búsqueda de un vehículo. En la práctica, deberías buscarlo en la base de datos.
+  const vehicle = { inv_id: vehicleId, inv_make: 'Toyota', inv_model: 'Corolla' };
+  
+  if (vehicle) {
+    res.render('inventory/detail', { title: 'Vehicle Details', vehicle });
+  } else {
+    res.status(404).send('Vehicle not found');
   }
-}
-
-module.exports = { buildById };
+};
