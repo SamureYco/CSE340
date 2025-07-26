@@ -1,4 +1,3 @@
-//Llama al modelo y genera la vista.
 const invModel = require("../models/inventory-model");
 
 async function buildDetailView(req, res, next) {
@@ -18,7 +17,7 @@ async function buildDetailView(req, res, next) {
       vehicle,
     });
   } catch (err) {
-    next(err); // Será atrapado por el middleware de error
+    next(err);
   }
 }
 

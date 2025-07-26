@@ -1,31 +1,33 @@
 // server.js
 
-// 1. Requiere Express
 const express = require('express');
-const app = express();
 const path = require('path');
+const app = express();
 const inventoryRoute = require("./routes/inventoryRoute");
 
-// 2. Define el puerto
 const port = process.env.PORT || 3000;
 
-// 3. Usa EJS como motor de plantillas
 app.set('view engine', 'ejs');
-
-// 4. Establece la carpeta de vistas
 app.set('views', path.join(__dirname, 'views'));
 
-// 5. Carpeta de archivos estáticos (CSS, imágenes, etc.)
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.urlencoded({ extended: true }));
 
-// 6. Ruta principal (home page)
+// Rutas
 app.get('/', (req, res) => {
-  res.render('index');
+  res.render('index', { title: "Home" });
+});
+app.use("/inventory", inventoryRoute);
+
+// Middleware de error
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).render('errors/error', {
+    title: "Error",
+    message: "Something went wrong!",
+  });
 });
 
-// 7. Inicia el servidor
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);
 });
- 
-app.use("/inventory", inventoryRoute);
