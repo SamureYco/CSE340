@@ -72,3 +72,55 @@ body {
 .error-button:hover {
   background-color: #b91c1c;
 }
+.tech-hero {
+  background: url('/public/images/auto1.jpg') no-repeat center center/cover;
+  min-height: 90vh;
+  position: relative;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tech-overlay {
+  background-color: rgba(0, 0, 0, 0.65);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tech-text {
+  text-align: center;
+  padding: 2rem;
+}
+
+.tech-text h1 {
+  font-size: 3rem;
+  color: #38bdf8; /* azul eléctrico */
+  margin-bottom: 1rem;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+}
+
+.tech-text p {
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.tech-button {
+  padding: 1rem 2rem;
+  background-color: #38bdf8;
+  color: #1e293b;
+  font-weight: bold;
+  border: none;
+  border-radius: 50px;
+  text-decoration: none;
+  font-size: 1.1rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.tech-button:hover {
+  background-color: #0ea5e9;
+  transform: scale(1.05);
+}
