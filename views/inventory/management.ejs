@@ -1,32 +1,38 @@
-<h1>Inventory Management</h1>
+<%- include('../partials/header') %>
 
-<!-- Mostrar mensaje flash si existe -->
-<% if (message) { %>
-  <div class="flash-message">
-    <%= message %>
+<main class="management-view">
+  <h1>Inventory Management</h1>
+
+  <!-- Mostrar mensaje flash si existe -->
+  <% if (message) { %>
+    <div class="flash-message">
+      <%= message %>
+    </div>
+  <% } %>
+
+  <!-- Enlaces para agregar nuevas clasificaciones o vehículos -->
+  <div class="management-links">
+    <a href="/inv/add-classification">Add New Classification</a>
+    <a href="/inv/add-inventory">Add New Vehicle</a>
   </div>
-<% } %>
 
-<!-- Enlaces para agregar nuevas clasificaciones o vehículos -->
-<div class="management-links">
-  <a href="/inv/add-classification">Add New Classification</a>
-  <a href="/inv/add-inventory">Add New Vehicle</a>
-</div>
+  <!-- Lista de vehículos disponibles -->
+  <h2>Available Vehicles</h2>
 
-<!-- Lista de vehículos disponibles -->
-<h2>Available Vehicles</h2>
+  <% if (!vehicles || vehicles.length === 0) { %>
+    <p>No vehicles available.</p>
+  <% } else { %>
+    <div class="vehicle-list">
+      <% vehicles.forEach(vehicle => { %>
+        <div class="vehicle-item">
+          <h3><%= vehicle.inv_year %> <%= vehicle.inv_make %> <%= vehicle.inv_model %></h3>
+          <img src="<%= vehicle.inv_image %>" alt="<%= vehicle.inv_make %> <%= vehicle.inv_model %>" width="200">
+          <p><%= vehicle.inv_description %></p>
+          <a href="/inv/detail/<%= vehicle.inv_id %>">View Details</a>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+</main>
 
-<% if (vehicles.length === 0) { %>
-  <p>No vehicles available.</p>
-<% } else { %>
-  <div class="vehicle-list">
-    <% vehicles.forEach(vehicle => { %>
-      <div class="vehicle-item">
-        <h3><%= vehicle.inv_year %> <%= vehicle.inv_make %> <%= vehicle.inv_model %></h3>
-        <img src="<%= vehicle.inv_image %>" alt="<%= vehicle.inv_make %> <%= vehicle.inv_model %>" width="200">
-        <p><%= vehicle.inv_description %></p>
-        <a href="/inventory/detail/<%= vehicle.inv_id %>">View Details</a>
-      </div>
-    <% }) %>
-  </div>
-<% } %>
+<%- include('../partials/footer') %>

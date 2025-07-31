@@ -1,18 +1,121 @@
 const invModel = require('../models/inventoryModel');
-const utils = require('../utilities/index');
+const utilities = require('../utilities/index');
+const { validationResult } = require("express-validator");
 
+/* Mostrar detalles del vehículo */
 async function getVehicleDetail(req, res, next) {
   const invId = parseInt(req.params.invId);
   try {
     const data = await invModel.getVehicleById(invId);
     if (!data) {
-      return next(); // Genera un 404 si no se encuentra
+      return next(); // 404
     }
-    const html = utils.buildVehicleDetailView(data);
-    res.render('inventory/detail', { title: `${data.inv_make} ${data.inv_model}`, html });
+    const html = utilities.buildVehicleDetailView(data);
+    res.render('inventory/detail', {
+      title: `${data.inv_make} ${data.inv_model}`,
+      html
+    });
   } catch (error) {
-    next(error); // Manejo de error 500
+    next(error); // 500
   }
 }
 
-module.exports = { getVehicleDetail };
+/* Vista principal de gestión */
+async function buildManagementView(req, res, next) {
+  try {
+    const nav = await utilities.getNav();
+    const data = await invModel.getAllInventory();
+    res.render('inventory/management', {
+      title: 'Inventory Management',
+      nav,
+      message: req.flash('message'),
+      vehicles: data.rows
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+/* Mostrar formulario de añadir vehículo */
+async function showAddInventoryForm(req, res, next) {
+  try {
+    const nav = await utilities.getNav();
+    const classificationList = await utilities.buildClassificationList();
+    res.render('inventory/add-inventory', {
+      title: 'Add New Vehicle',
+      nav,
+      classificationList,
+      message: req.flash('message'),
+      errors: null,
+      // Sticky vacíos
+      inv_make: "", inv_model: "", inv_year: "", inv_description: "",
+      inv_image: "", inv_thumbnail: "", inv_price: "", inv_miles: "", inv_color: ""
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+/* Procesar nuevo vehículo */
+async function addInventory(req, res, next) {
+  const {
+    classification_id, inv_make, inv_model, inv_year,
+    inv_description, inv_image, inv_thumbnail,
+    inv_price, inv_miles, inv_color
+  } = req.body;
+
+  const errors = validationResult(req);
+  const nav = await utilities.getNav();
+  const classificationList = await utilities.buildClassificationList(classification_id);
+
+  if (!errors.isEmpty()) {
+    return res.render("inventory/add-inventory", {
+      title: "Add New Vehicle",
+      nav,
+      classificationList,
+      message: null,
+      errors: errors.array(),
+      inv_make, inv_model, inv_year, inv_description,
+      inv_image, inv_thumbnail, inv_price, inv_miles, inv_color
+    });
+  }
+
+  try {
+    const result = await invModel.insertInventory({
+      classification_id,
+      inv_make,
+      inv_model,
+      inv_year,
+      inv_description,
+      inv_image,
+      inv_thumbnail,
+      inv_price,
+      inv_miles,
+      inv_color
+    });
+
+    if (result) {
+      req.flash('message', 'New vehicle added successfully.');
+      res.redirect('/inv');
+    } else {
+      res.render('inventory/add-inventory', {
+        title: 'Add New Vehicle',
+        nav,
+        classificationList,
+        message: 'Failed to add vehicle.',
+        errors: null,
+        inv_make, inv_model, inv_year, inv_description,
+        inv_image, inv_thumbnail, inv_price, inv_miles, inv_color
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
+module.exports = {
+  getVehicleDetail,
+  buildManagementView,
+  showAddInventoryForm,
+  addInventory
+};

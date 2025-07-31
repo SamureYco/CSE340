@@ -123,4 +123,75 @@ body {
 .tech-button:hover {
   background-color: #0ea5e9;
   transform: scale(1.05);
+}.management-view {
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+.management-links {
+  display: flex;
+  gap: 2rem;
+  margin: 1rem 0 2rem 0;
+}
+
+.management-links a {
+  text-decoration: none;
+  font-weight: bold;
+  color: #2563eb;
+  padding: 0.5rem 1rem;
+  background-color: #e0f2fe;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.management-links a:hover {
+  background-color: #bae6fd;
+}
+
+.flash-message {
+  background-color: #dcfce7;
+  padding: 1rem;
+  border-left: 5px solid #22c55e;
+  margin-bottom: 1rem;
+  border-radius: 5px;
+}
+
+.vehicle-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.vehicle-item {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 1rem;
+  border-radius: 10px;
+  width: 300px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.vehicle-item img {
+  max-width: 100%;
+  border-radius: 5px;
+}
+
+.vehicle-item h3 {
+  margin-top: 0;
+}
+
+.vehicle-item a {
+  display: inline-block;
+  margin-top: 0.5rem;
+  background-color: #2563eb;
+  color: white;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.vehicle-item a:hover {
+  background-color: #1e40af;
 }

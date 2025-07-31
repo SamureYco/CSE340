@@ -1,3 +1,5 @@
+const invModel = require("../models/inventoryModel");
+
 function buildVehicleDetailView(data) {
   const formattedPrice = `$${data.inv_price.toLocaleString()}`;
   const formattedMiles = data.inv_miles.toLocaleString();
@@ -16,4 +18,25 @@ function buildVehicleDetailView(data) {
   `;
 }
 
-module.exports = { buildVehicleDetailView };
+// 👇 NUEVA función: genera el <select> para clasificaciones
+async function buildClassificationList(classification_id = null) {
+  let data = await invModel.getClassifications();
+  let list = '<select name="classification_id" id="classification_id" required>';
+  list += "<option value=''>Choose a Classification</option>";
+
+  data.rows.forEach(row => {
+    list += `<option value="${row.classification_id}"`;
+    if (classification_id && row.classification_id == classification_id) {
+      list += " selected";
+    }
+    list += `>${row.classification_name}</option>`;
+  });
+
+  list += "</select>";
+  return list;
+}
+
+module.exports = {
+  buildVehicleDetailView,
+  buildClassificationList, // 👈 ¡NO OLVIDES exportarla!
+};
