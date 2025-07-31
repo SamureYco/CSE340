@@ -9,7 +9,7 @@ async function getVehicleById(id) {
     inv_miles: 30000,
     inv_color: 'Gray',
     inv_description: 'A comfortable and fuel-efficient sedan.',
-    inv_image: 'https://cdn.pixabay.com/photo/2015/01/19/13/51/car-604019_1280.jpg'
+    inv_image: '/images/auto1.jpg'
   };
 }
 
