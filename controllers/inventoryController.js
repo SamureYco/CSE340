@@ -112,10 +112,63 @@ async function addInventory(req, res, next) {
     next(error);
   }
 }
+async function showAddClassificationForm(req, res, next) {
+  try {
+    const nav = await utilities.getNav();
+    res.render("inventory/add-classification", {
+      title: "Add New Classification",
+      nav,
+      message: req.flash("message"),
+      errors: null,
+      classification_name: "" // para formulario sticky
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+async function addClassification(req, res, next) {
+  const { classification_name } = req.body;
+
+  const errors = validationResult(req);
+  const nav = await utilities.getNav();
+
+  if (!errors.isEmpty()) {
+    return res.render("inventory/add-classification", {
+      title: "Add New Classification",
+      nav,
+      message: null,
+      errors: errors.array(),
+      classification_name
+    });
+  }
+
+  try {
+    const result = await invModel.insertClassification(classification_name);
+
+    if (result) {
+      req.flash("message", "New classification added successfully.");
+      res.redirect("/inv");
+    } else {
+      res.render("inventory/add-classification", {
+        title: "Add New Classification",
+        nav,
+        message: "Failed to add classification.",
+        errors: null,
+        classification_name
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
+
 
 module.exports = {
   getVehicleDetail,
   buildManagementView,
   showAddInventoryForm,
-  addInventory
+  addInventory,
+  showAddClassificationForm,
+  addClassification
 };
