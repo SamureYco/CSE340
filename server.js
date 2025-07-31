@@ -1,12 +1,8 @@
-// server.js
-
 const express = require('express');
 const path = require('path');
 const app = express();
-const inventoryRoute = require("./routes/inventoryRoute");
 
-const port = process.env.PORT || 3000;
-
+// Configuración
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
@@ -14,20 +10,31 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 
 // Rutas
-app.get('/', (req, res) => {
-  res.render('index', { title: "Home" });
-});
-app.use("/inventory", inventoryRoute);
+const inventoryRoutes = require('./routes/inventoryRoute');
+app.use('/inv', inventoryRoutes);
 
-// Middleware de error
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).render('errors/error', {
-    title: "Error",
-    message: "Something went wrong!",
+// Ruta de prueba temporal
+app.get('/', (req, res) => {
+  res.send('Home page working!');
+});
+
+// 404 Not Found
+app.use((req, res, next) => {
+  res.status(404).render('errors/error', {
+    errorCode: 404,
+    message: 'Page not found'
   });
 });
 
-app.listen(port, () => {
-  console.log(`Servidor corriendo en http://localhost:${port}`);
+// 500 Internal Server Error
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).render('errors/error', {
+    errorCode: 500,
+    message: 'Something went wrong!'
+  });
 });
+
+// ✅ Escuchar el servidor: DEBE ir al final
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -1,17 +1,19 @@
-export function buildVehicleHtml(vehicle) {
-  const price = Number(vehicle.inv_price).toLocaleString("en-US", {
-    style: "currency",
-    currency: "USD",
-  });
-
-  const mileage = Number(vehicle.inv_miles).toLocaleString("en-US");
+function buildVehicleDetailView(data) {
+  const formattedPrice = `$${data.inv_price.toLocaleString()}`;
+  const formattedMiles = data.inv_miles.toLocaleString();
 
   return `
-    <img src="${vehicle.inv_image}" alt="Image of ${vehicle.inv_make} ${vehicle.inv_model}">
-    <h2>${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}</h2>
-    <p><strong>Price:</strong> ${price}</p>
-    <p><strong>Mileage:</strong> ${mileage} miles</p>
-    <p><strong>Color:</strong> ${vehicle.inv_color}</p>
-    <p><strong>Description:</strong> ${vehicle.inv_description}</p>
+    <div class="vehicle-detail">
+      <img src="${data.inv_image}" alt="Image of ${data.inv_make} ${data.inv_model}">
+      <div>
+        <h2>${data.inv_year} ${data.inv_make} ${data.inv_model}</h2>
+        <p><strong>Price:</strong> ${formattedPrice}</p>
+        <p><strong>Mileage:</strong> ${formattedMiles} miles</p>
+        <p><strong>Description:</strong> ${data.inv_description}</p>
+        <p><strong>Color:</strong> ${data.inv_color}</p>
+      </div>
+    </div>
   `;
 }
+
+module.exports = { buildVehicleDetailView };
