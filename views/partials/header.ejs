@@ -1,7 +1,16 @@
-<header>
-  <h1>Car Inventory</h1>
-  <nav>
-    <a href="/">Home</a>
-    <a href="/inv/classification">Inventory</a>
-  </nav>
+<header id="top-header">
+  <div class="header-container">
+    <span class="siteName">
+      <a href="/" title="Return to Homepage">CSE Motors</a>
+    </span>
+    <div id="tools">
+      <% if (locals.loggedin) { %>
+        <span>Welcome, <%= locals.accountData.account_firstname %>!</span>
+        <a href="/account/">Account Management</a>
+        <a href="/account/logout">Logout</a>
+      <% } else { %>
+        <a href="/account/login" title="Click to log in">My Account</a>
+      <% } %>
+    </div>
+  </div>
 </header>

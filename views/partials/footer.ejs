@@ -1,4 +1,6 @@
-<footer> 
-  <p>&copy; 2025 CSE Motors. All rights reserved.</p>
-  <a href="/inv/trigger-error">Trigger Error</a>
+<% const d = new Date()
+let year = d.getFullYear() %>
+<footer>
+    <p class="copyright">© <%= year %>, CSE 340 App </p>
+    <p><a href="/trigger-error" title="Trigger an intentional server error">Trigger Error</a></p>
 </footer>
