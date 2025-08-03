@@ -1,41 +1,41 @@
-const express = require('express');
-const router = express.Router();
-const inventoryController = require('../controllers/inventoryController');
-const invValidation = require('../middleware/inventoryValidation');
+const express = require("express")
+const router = new express.Router() 
+const invController = require("../controllers/invController")
+const utilities = require("../utilities/")
 
-// Vista principal de gestión de inventario
-router.get('/', inventoryController.buildManagementView);
 
-// -----------------------------
-// Mostrar detalle de vehículo
-router.get('/detail/:invId', inventoryController.getVehicleDetail);
+// Route to build inventory by classification view
+router.get("/type/:classificationId", invController.buildByClassificationId);
 
-// -----------------------------
-// Clasificación
-router.get('/add-classification', inventoryController.showAddClassificationForm);
+// Route to build inventory detail view
+router.get("/detail/:invId", invController.buildByInvId);
+router.get("/", utilities.checkAdmin, invController.showManagementView);
 
+router.get("/add-classification", utilities.checkAdmin, invController.showAddClassificationForm);
+router.post("/add-classification", utilities.checkAdmin, invController.processAddClassification);
+
+router.get("/add-inventory", utilities.checkAdmin, invController.showAddInventoryForm);
+router.post("/add-inventory", utilities.checkAdmin, invController.processAddInventory);
+
+// Route to get inventory items as JSON
+router.get("/getInventory/:classification_id", utilities.handleErrors(invController.getInventoryJSON));
+
+//Route to Edit Inventory Item
+router.get("/edit/:inv_id",utilities.checkAdmin,  utilities.handleErrors(invController.buildEditInventoryView));
+
+//Route to Update Inventory Item
 router.post(
-  '/add-classification',
-  invValidation.classificationRules(),
-  invValidation.checkClassificationData,
-  inventoryController.addClassification
+    "/update",
+    utilities.checkAdmin,
+    utilities.newInventoryRules(), 
+    utilities.checkUpdateData, 
+    utilities.handleErrors(invController.updateInventory)
 );
 
-// -----------------------------
-// Inventario
-router.get('/add-inventory', inventoryController.showAddInventoryForm);
+//Route to get delete confirmation view
+router.get("/delete/:inv_id",utilities.checkAdmin, utilities.handleErrors(invController.buildDeleteConfirmationView));
 
-router.post(
-  '/add-inventory',
-  invValidation.inventoryRules(),
-  invValidation.checkInventoryData,
-  inventoryController.addInventory
-);
-
-// -----------------------------
-// Error intencional (para Task 3 de Assignment 3)
-router.get('/trigger-error', (req, res) => {
-  throw new Error("Intentional error triggered!");
-});
+//Route to handle delete process
+router.post("/delete",utilities.checkAdmin, utilities.handleErrors(invController.deleteInventoryItem));
 
 module.exports = router;
