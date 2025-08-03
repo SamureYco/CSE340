@@ -1,27 +1,14 @@
-<%- include('../partials/header') %>
-
-<main class="form-view">
-  <h1>Add New Classification</h1>
-
-  <% if (message) { %>
-    <div class="flash-message"><%= message %></div>
-  <% } %>
-
-  <% if (errors && errors.length > 0) { %>
-    <ul class="form-errors">
-      <% errors.forEach(error => { %>
-        <li><%= error.msg %></li>
-      <% }) %>
-    </ul>
-  <% } %>
-
-  <form action="/inv/add-classification" method="post">
-    <label for="classification_name">Classification Name</label>
-    <input type="text" id="classification_name" name="classification_name" pattern="^[A-Za-z0-9]+$" required>
-    <p class="form-hint">No spaces or special characters allowed.</p>
-
-    <button type="submit">Add Classification</button>
-  </form>
-</main>
-
-<%- include('../partials/footer') %>
+<main>
+    <h1>Add New Classification</h1>
+    
+    <% if (message) { %>
+      <p class="flash-message"><%= message %></p>
+    <% } %>
+  
+    <form class="classification-form" id="classificationForm" action="/inv/add-classification" method="POST">
+      <label for="classification_name">Classification Name:</label>
+      <input type="text" id="classification_name" name="classification_name" required pattern="^[a-zA-Z0-9]+$" title="Only letters and numbers allowed">
+      
+      <button type="submit">Add Classification</button>
+    </form>
+  </main>

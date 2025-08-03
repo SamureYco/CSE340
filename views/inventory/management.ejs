@@ -1,38 +1,40 @@
-<%- include('../partials/header') %>
+<main class="management-container">
+    <h1>Inventory Management</h1>
 
-<main class="management-view">
-  <h1>Inventory Management</h1>
-
-  <!-- Mostrar mensaje flash si existe -->
-  <% if (message) { %>
-    <div class="flash-message">
-      <%= message %>
-    </div>
-  <% } %>
-
-  <!-- Enlaces para agregar nuevas clasificaciones o vehículos -->
-  <div class="management-links">
-    <a href="/inv/add-classification">Add New Classification</a>
-    <a href="/inv/add-inventory">Add New Vehicle</a>
-  </div>
-
-  <!-- Lista de vehículos disponibles -->
-  <h2>Available Vehicles</h2>
-
-  <% if (!vehicles || vehicles.length === 0) { %>
-    <p>No vehicles available.</p>
-  <% } else { %>
-    <div class="vehicle-list">
-      <% vehicles.forEach(vehicle => { %>
-        <div class="vehicle-item">
-          <h3><%= vehicle.inv_year %> <%= vehicle.inv_make %> <%= vehicle.inv_model %></h3>
-          <img src="<%= vehicle.inv_image %>" alt="<%= vehicle.inv_make %> <%= vehicle.inv_model %>" width="200">
-          <p><%= vehicle.inv_description %></p>
-          <a href="/inv/detail/<%= vehicle.inv_id %>">View Details</a>
+    <!-- Flash Message Display -->
+    <% console.log(messages); %> 
+    <% if (Array.isArray(messages) && messages.length > 0) { %>
+        <div class="flash-message">
+            <% messages.forEach(function(message) { %>
+                <p><%= message %></p>
+            <% }); %>
         </div>
-      <% }) %>
+    <% } %>
+    
+    <div>
+        <a href="/inv/add-classification">Add New Classification</a>
     </div>
-  <% } %>
-</main>
+    <div>
+        <a href="/inv/add-inventory">Add New Inventory Item</a>
+    </div>
 
-<%- include('../partials/footer') %>
+    <!-- Manage Inventory Heading -->
+    <h2>Manage Inventory</h2>
+    <p>Select a classification from the list below to see the inventory items.</p>
+
+    <!-- Display the classification dropdown list -->
+    <form id="classificationForm">
+        <label for="classification_id">Select Classification:</label>
+        <%- classificationDropdown %> <!-- This will render the select dropdown -->
+    </form>
+
+    <!-- Empty table for displaying inventory -->
+    <table id="inventoryDisplay"></table>
+
+    <!-- Message for users with JavaScript disabled -->
+    <noscript>JavaScript must be enabled to use this page.</noscript>
+
+    <!-- Include the JavaScript file to handle inventory selection -->
+    <script src="/js/inventoryManagement.js" defer></script>
+    <script src="/js/inventory.js" defer></script>
+</main>
