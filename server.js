@@ -19,7 +19,7 @@ const inventoryRoute = require("./routes/inventoryRoute")
 const accountRoute = require("./routes/accountRoute")
 
 const utilities = require("./utilities/index")
-const errorRoutes = require("./routes/errorRoute ");
+const errorRoutes = require("./routes/errorRoute");
 
 const session = require("express-session")
 const flash = require('connect-flash');
