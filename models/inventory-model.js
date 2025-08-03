@@ -1,70 +1,142 @@
-const accountModel = require("../models/account-model");
-const utilities = require("../utilities/");
+const pool = require("../database/")
 
 /* ***************************
- * View Wishlist Page
+ *  Get all classification data
  * ************************** */
-async function viewWishlist(req, res) {
-    let nav = await utilities.getNav();
-    const account_id = res.locals.accountData.account_id;
-    
+async function getClassifications(){
+  return await pool.query("SELECT * FROM public.classification ORDER BY classification_name")
+}
+
+/* ***************************
+ *  Get all inventory items and classification_name by classification_id
+ * ************************** */
+async function getInventoryByClassificationId(classification_id) {
     try {
-        const wishlistItems = await accountModel.getWishlist(account_id);
-        res.render("account/wishlist", {
-            title: "My Wishlist",
-            nav,
-            wishlistItems,
-            message: req.flash("notice"),
-        });
+      const data = await pool.query(
+        `SELECT * FROM public.inventory AS i 
+        JOIN public.classification AS c 
+        ON i.classification_id = c.classification_id 
+        WHERE i.classification_id = $1`,
+        [classification_id]
+      )
+      return data.rows
     } catch (error) {
-        console.error("Error retrieving wishlist:", error);
-        req.flash("notice", "Error loading wishlist.");
-        res.redirect("/account/");
+      console.error("getclassificationsbyid error " + error)
     }
 }
 
 /* ***************************
- * Add Vehicle to Wishlist
+ *  Get inventory item by ID
  * ************************** */
-async function addToWishlist(req, res) {
-    const account_id = res.locals.accountData.account_id;
-    const inv_id = req.body.inv_id;
-
-    try {
-        const result = await accountModel.addToWishlist(account_id, inv_id);
-        if (result) {
-            req.flash("notice", "Vehicle added to your wishlist!");
-        } else {
-            req.flash("notice", "Vehicle is already in your wishlist.");
-        }
-        res.redirect(`/inv/detail/${inv_id}`);
-    } catch (error) {
-        console.error("Error adding to wishlist:", error);
-        req.flash("notice", "Error adding vehicle to wishlist.");
-        res.redirect(`/inv/detail/${inv_id}`);
-    }
+async function getInventoryById(invId) {
+  try {
+    const data = await pool.query(
+      `SELECT * FROM public.inventory WHERE inv_id = $1`,
+      [invId]
+    );
+    return data.rows[0]; 
+  } catch (error) {
+    console.error("getInventoryById error " + error);
+  }
 }
 
 /* ***************************
- * Remove Vehicle from Wishlist
+ *  Add Classification
  * ************************** */
-async function removeFromWishlist(req, res) {
-    const account_id = res.locals.accountData.account_id;
-    const inv_id = req.body.inv_id;
-
-    try {
-        const result = await accountModel.removeFromWishlist(account_id, inv_id);
-        if (result) {
-            req.flash("notice", "Vehicle removed from your wishlist.");
-        } else {
-            req.flash("notice", "Vehicle not found in your wishlist.");
-        }
-        res.redirect(`/inv/detail/${inv_id}`);
-    } catch (error) {
-        console.error("Error removing from wishlist:", error);
-        req.flash("notice", "Error removing vehicle from wishlist.");
-        res.redirect(`/inv/detail/${inv_id}`);
-    }
+async function addClassification(classification_name) {
+  try {
+    const sql = "INSERT INTO classification (classification_name) VALUES ($1)";
+    const result = await pool.query(sql, [classification_name]);
+    return result.rowCount;
+  } catch (error) {
+    console.error("Error inserting classification:", error);
+    return null;
+  }
 }
 
-module.exports = { viewWishlist, addToWishlist, removeFromWishlist };
+/* ***************************
+ *  Add Inventory
+ * ************************** */
+
+async function addInventoryItem(classification_id, inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color) {
+  try {
+    const sql = `
+      INSERT INTO inventory (classification_id, inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      RETURNING *`;
+    const result = await pool.query(sql, [classification_id, inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color]);
+    return result.rowCount;
+  } catch (error) {
+    console.error("Error inserting inventory item:", error);
+    return null;
+  }
+}
+
+/* ***************************
+ *  Update Inventory Data
+ * ************************** */
+async function updateInventory(
+  inv_id,
+  inv_make,
+  inv_model,
+  inv_description,
+  inv_image,
+  inv_thumbnail,
+  inv_price,
+  inv_year,
+  inv_miles,
+  inv_color,
+  classification_id
+) {
+  try {
+    const sql = `
+      UPDATE public.inventory 
+      SET inv_make = $1, 
+          inv_model = $2, 
+          inv_description = $3, 
+          inv_image = $4, 
+          inv_thumbnail = $5, 
+          inv_price = $6, 
+          inv_year = $7, 
+          inv_miles = $8, 
+          inv_color = $9, 
+          classification_id = $10 
+      WHERE inv_id = $11 
+      RETURNING *`;
+
+    const data = await pool.query(sql, [
+      inv_make,
+      inv_model,
+      inv_description,
+      inv_image,
+      inv_thumbnail,
+      inv_price,
+      inv_year,
+      inv_miles,
+      inv_color,
+      classification_id,
+      inv_id,
+    ]);
+
+    return data.rows[0]; // Return the updated row
+  } catch (error) {
+    console.error("Model error: " + error);
+  }
+}
+
+/* ***************************
+ *  Delete Inventory Item
+ * ************************** */
+async function deleteInventoryById(inv_id) {
+  try {
+    const sql = 'DELETE FROM inventory WHERE inv_id = $1'
+    const data = await pool.query(sql, [inv_id])
+    return data.rowCount // Returns 1 if successful, 0 if unsuccessful
+  } catch (error) {
+    console.error(" Delete Inventory Error:", error)
+    throw new Error("Delete Inventory Error");
+  }
+}
+
+
+module.exports = {getClassifications, getInventoryByClassificationId, getInventoryById, addClassification, addInventoryItem, updateInventory, deleteInventoryById}
