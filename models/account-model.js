@@ -122,5 +122,4 @@ async function getWishlist(account_id) {
     return [];
   }
 }
-
 module.exports = { registerAccount, getAccountByEmail, getAccountById, updateAccountInfo, updatePassword, addToWishlist, removeFromWishlist, getWishlist}
