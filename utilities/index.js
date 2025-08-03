@@ -1,4 +1,4 @@
-const invModel = require("../models/inventoryModel");
+const invModel = require("../models/inventory-model");
 
 function buildVehicleDetailView(data) {
   const formattedPrice = `$${data.inv_price.toLocaleString()}`;

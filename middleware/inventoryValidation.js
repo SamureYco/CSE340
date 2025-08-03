@@ -45,7 +45,7 @@ const checkInventoryData = (req, res, next) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     const utilities = require("../utilities/index")
-    const invModel = require("../models/inventoryModel")
+    const invModel = require("../models/inventory-model")
 
     Promise.all([
       utilities.getNav(),
