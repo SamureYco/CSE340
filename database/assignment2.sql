@@ -25,5 +25,5 @@ WHERE c.classification_name = 'Sport';
 -- 6. Agregar "/vehicles" a las rutas de imagen
 UPDATE inventory
 SET 
-  inv_image = REPLACE(inv_image, '/images/', '/images/vehicles/'),
-  inv_thumbnail = REPLACE(inv_thumbnail, '/images/', '/images/vehicles/');
+  inv_image = REPLACE(inv_image, '/images/', '/images/auto1/'),
+  inv_thumbnail = REPLACE(inv_thumbnail, '/images/', '/images/auto2/');
